@@ -139,7 +139,7 @@ const Landing = () => {
       for(let i=0;i<n;i++)
       {
         console.log(tcs[i]["your"]);
-        if(tcs[i]["output"]==tcs[i]["your"])
+        if(tcs[i]["output"]===tcs[i]["your"])
         {
           ans++;
         }
@@ -180,6 +180,7 @@ const Landing = () => {
      return 0;
    } else {
      console.log("response.data", response.data);
+     console.log(response.data.stdout);
      tcs[i]['your']=atob(response.data.stdout);
    }
  } catch (err) {
@@ -213,7 +214,10 @@ const Landing = () => {
       } else {
         setProcessing(false);
         setOutputDetails(response.data);
-        showSuccessToast(`Compiled Successfully!`);
+        if(response.data.stderr == null)
+        {
+          showSuccessToast(`Compiled Successfully!`);
+        }
         console.log("response.data", response.data);
         return;
       }
@@ -241,7 +245,7 @@ const Landing = () => {
   }, []);
 
   const showSuccessToast = (msg) => {
-    toast.success(msg || `Compiled Successfully!`, {
+    toast.success(msg , {
       position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,

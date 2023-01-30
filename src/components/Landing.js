@@ -18,8 +18,8 @@ import TestCases from "./TestCases";
 const Default = `/* Write your Code here */`;
 let tcs=[
   {id:1 ,input: 'Ooha', output: 'Ooha',your:''},
-  // {id:2,input: 'Hamshaa', output: 'Hamshaa',your:''},
-  // {id:3,input: 'Sri', output: 'Sri',your:''}
+  {id:2,input: 'Hamshaa', output: 'Hamshaa',your:''},
+  {id:3,input: 'Sri', output: 'Sri',your:''}
 ];
 const Landing = () => {
   const [code, setCode] = useState(Default);
@@ -30,20 +30,14 @@ const Landing = () => {
   const [language, setLanguage] = useState(languageOptions[0]);
   const [testCases, setTestCases] = useState(null);
   const [runTests, setRunTestCases] = useState(tcs);
-  const [validate, setValidate] = useState(null);
   const enterPress = useKeyPress("Enter");
   const ctrlPress = useKeyPress("Control");
-  let ans=0;
+  const delay = ms => new Promise(res => setTimeout(res, ms));
   let n=0;
   const onSelectChange = (sl) => {
     console.log("selected Option...", sl);
     setLanguage(sl);
   };
-  useEffect(() => {
-    // console.log("use effect for validate");
-    console.log("Validate"+validate);
-    validateTestCases();
-  }, [validate]);
   useEffect(() => {
     if (enterPress && ctrlPress) {
       console.log("enterPress", enterPress);
@@ -62,7 +56,7 @@ const Landing = () => {
       }
     }
   };
-  const handleCompile = () => {
+  const handleCompile = async() => {
     setProcessing(true);
     const formData = {
       language_id: language.id,
@@ -108,10 +102,7 @@ const Landing = () => {
         console.log("catch block...", error);
       });
   };
-  function timeout(delay) {
-    return new Promise( res => setTimeout(res, delay) );
-};
- const runTestCases = () => {
+ const runTestCases = async() => {
       n=tcs.length;
       setTestCases(true);
       for(let i=0;i<n;i++)
@@ -135,58 +126,35 @@ const Landing = () => {
           },
           data: formData,
         };
-        axios
+        await axios
           .request(options)
           .then(function (response) {
             console.log("res.data", response.data);
             const token = response.data.token;
             checkTestCaseStatus(token,i);
           })
-        if(testCases)
-        {
-          i--;
-        }
-       timeout(3000);
       }
-      setValidate(1);
+      await delay (3000);
+      let ans=0;
+      for(let i=0;i<n;i++)
+      {
+        console.log(tcs[i]["your"]);
+        if(tcs[i]["output"]==tcs[i]["your"])
+        {
+          ans++;
+        }
+      }
       setTestCases(false);
-      // let ans=0;
-      // for(let i=0;i<n;i++)
-      // {
-      //   if(tcs[i]['output']==tcs[i]['your'])
-      //   {
-      //     ans++;
-      //   }
-      // }
-      // if(ans==n)
-      // {
-      //   showSuccessToast("Hurray!! All test cases Passes");
-      // }
-      // else{
-      //   showErrorToast(ans+" out of "+n+" test cases passed");
-      // }
-      setRunTestCases(tcs);
- };
- const validateTestCases = () =>{
-      // if(n==0 || validate==0)
-      // {
-      //   console.log("if1");
-      //   return;
-      // }
-      if(validate==1 && ans==n)
+      if(ans==n)
       {
         console.log(ans);
         showSuccessToast("Hurray!! All test cases Passes");
       }
-      else if(validate==1 && ans!=n){
+      else{
         console.log('failed');
         showErrorToast(ans+" out of "+n+" test cases passed");
       }
-      else{
-        console.log("Do nothing");
-      }
-      setValidate(0);
-      return;
+      setRunTestCases(tcs);
  };
  const checkTestCaseStatus = async (token,i) => {
   const options = {
@@ -213,10 +181,6 @@ const Landing = () => {
    } else {
      console.log("response.data", response.data);
      tcs[i]['your']=atob(response.data.stdout);
-     if(atob(response.data.expected_output).localeCompare(atob(response.data.stdout))==0)
-     {
-       ans++;
-     }
    }
  } catch (err) {
    console.log("err", err);
@@ -279,7 +243,7 @@ const Landing = () => {
   const showSuccessToast = (msg) => {
     toast.success(msg || `Compiled Successfully!`, {
       position: "top-right",
-      autoClose: 1000,
+      autoClose: 3000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -290,7 +254,7 @@ const Landing = () => {
   const showErrorToast = (msg, timer) => {
     toast.error(msg || `Something went wrong! Please try again.`, {
       position: "top-right",
-      autoClose: timer ? timer : 1000,
+      autoClose: timer ? timer : 3000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -303,7 +267,7 @@ const Landing = () => {
     <>
       <ToastContainer
         position="top-right"
-        autoClose={2000}
+        autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick

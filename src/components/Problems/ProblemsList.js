@@ -21,7 +21,7 @@ const ProblemList =({}) =>{
     return (
         <>
        <div class="flex rounded justify-center">
-<div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+<div class="overflow-x-auto">
   <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
     <div class="overflow-hidden">
       <table class="w-3/4 border-2 border-black z-10 rounded-md">

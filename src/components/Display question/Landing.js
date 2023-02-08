@@ -16,6 +16,7 @@ import ThemeDropdown from "./ThemeDropdown";
 import LanguagesDropdown from "./LanguagesDropdown";
 import TestCases from "./TestCases";
 import DisplayQuestion from "./DisplayQuestion";
+import NavBar from "./NavBar";
 const Default = `/* Write your Code here */`;
 let qsn={
   qsnId : "HELW",
@@ -323,10 +324,6 @@ const Landing = () => {
 
   return (
     <>
-    {/* <div className="px-4 py-2 ">
-          <Header
-          />
-      </div> */}
       <ToastContainer
         position="top-right"
         autoClose={3000}
